@@ -299,30 +299,31 @@ worksheet_err = workbook.add_worksheet('Failures')
 fieldnames = ['TITLE', 'TITLE_ID', 'REGION', 'VERSION', 'APP_VER', 'CONTENT_ID', 'SIZE']
 
 for pkg_path in pkg_paths:
-	for file in os.listdir(pkg_path):
-		if file.endswith(".pkg"):
-			count += 1
-			try:
-				pkgInfo = getPkgInfo(os.path.join(pkg_path, file))
-				# set worksheet
-				if pkgInfo['isUpdate']:
-					sheet = worksheet_upd
-					count_upd += 1
-					count_sheet = count_upd
-				else:
-					sheet = worksheet_app
-					count_app += 1
-					count_sheet = count_app
-				# fill row
-				for pos in range(len(fieldnames)):
-					if (fieldnames[pos] == 'TITLE'):
-						sheet.write(count_sheet, pos, getReadableString(pkgInfo[fieldnames[pos]]))
+	for root, directories, files in os.walk(pkg_path):
+		for file in files: 
+			if file.lower().endswith(".pkg"):
+				count += 1
+				try:
+					pkgInfo = getPkgInfo(os.path.join(root, file))
+					# set worksheet
+					if pkgInfo['isUpdate']:
+						sheet = worksheet_upd
+						count_upd += 1
+						count_sheet = count_upd
 					else:
-						sheet.write(count_sheet, pos, pkgInfo[fieldnames[pos]])
-			except:
-				# failed to parse pkg
-				count_err +=1
-				worksheet_err.write(count_err, 0, file)
+						sheet = worksheet_app
+						count_app += 1
+						count_sheet = count_app
+					# fill row
+					for pos in range(len(fieldnames)):
+						if (fieldnames[pos] == 'TITLE'):
+							sheet.write(count_sheet, pos, getReadableString(pkgInfo[fieldnames[pos]]))
+						else:
+							sheet.write(count_sheet, pos, pkgInfo[fieldnames[pos]])
+				except:
+					# failed to parse pkg
+					count_err +=1
+					worksheet_err.write(count_err, 0, file)
 
 # prepare header
 header = []
