@@ -1,4 +1,4 @@
-## pkg_list v1.00 by n1ghty
+## pkg_list v1.01 by n1ghty
 ##
 ## This file is based on
 ## UnPKG rev 0x00000008 (public edition), (c) flatz
